@@ -1,307 +1,256 @@
-var elementosXContent = document.querySelectorAll('div.x_content');
-var elementosXPanel = document.querySelectorAll('div.x_panel');
-var elementoTable = document.getElementById('dt1');
-var elementosTbody = elementoTable.getElementsByTagName('tbody');
-var elementosTR = [];
-var notaID = document.getElementById('IDNF')
+// Defina a variável com o link HTML
+var linkHtml = '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />';
 
-// Percorra as tabelas tbody e colete os elementos tr
-for (var i = 0; i < elementosTbody.length; i++) {
-  var elementosTRDaTabela = elementosTbody[i].getElementsByTagName('tr');
-  for (var j = 0; j < elementosTRDaTabela.length; j++) {
-    elementosTR.push(elementosTRDaTabela[j]);
-  }
+// Crie um elemento temporário para conter o link
+var tempDiv = document.createElement('div');
+tempDiv.innerHTML = linkHtml;
+
+// Adicione o link ao <head> da página
+var headElement = document.head;
+headElement.appendChild(tempDiv.firstChild);
+
+
+
+
+
+if (document.querySelectorAll(".x_title")[2].querySelector('h2').textContent.includes("PEDIDO:")){
+  var DivNumPedido = document.querySelectorAll(".x_title")[2].querySelector('h2').textContent.split(':')
+  document.querySelectorAll(".x_title")[2].querySelector('h2').style.display = "none"
+
+
+var novoBotaoHTML = `<div class="col-md-6 col-sm-12 col-xs-12" style="padding:0px">
+<button id="btnPed" class="btn btn-danger" style="display:flex;flex-direction:row;align-itens:end;">
+    <div id="textPed" style="text-align: right;width:0px;overflow: hidden;padding-left:20px;pointer-events: none;">
+       PEDIDO:
+    </div>
+    <div class="NumeroPedido" style="margin-right:1px;pointer-events: none;">
+       <strong>${DivNumPedido[1]}</strong>
+    </div>
+    <div class="" style="position: absolute;left:25px;top:10px;transform: translate(-17.5%, -32%);width:85px;height: 35px;pointer-events: none;;">
+        <i class="fa-solid fa-receipt fa-bounce" style="position: absolute; top: 30%; left: 3%;pointer-events: none;"></i>
+    
+    
+</div></button></div>
+`;
+
 }
 
-for (var i = 0; i < elementosTR.length; i++) {
-  elementosTR[i].style.backgroundColor = '#87CEFA';
-  elementosTR[i].style.color = "#555";
+if (document.querySelectorAll(".x_title")[2].querySelector('h2').textContent.includes("PEDIDO:")){
+  const pedidoEco = document.querySelectorAll(".x_content");
+  const obsPed = '<label>Observação do pedido:</label><input type="text" id="pedidoEco" class="form-control" placeholder="Sem observação inserida no pedido."  value="" disabled>';
 
-}
+// Certifique-se de que o pedidoEco[3] existe antes de tentar adicioná-lo
+if (pedidoEco.length > 3) {
+  pedidoEco[3].innerHTML = obsPed;
+  document.querySelectorAll(".x_title")[2].insertAdjacentHTML('afterbegin', novoBotaoHTML);
 
-//Se houver observação, deixa a aba aberta.
-if (elementosTR.length > 0) {
-  elementosXContent[7].style.display="block"
-} else {}
-
-//Esconde botoes de "JÁ PAGO" e "SEM PEDIDO".
-var botoes = [  {id: "btnNumPedido"},  {id: "btnLancamentoJaPago"}]
-
-botoes.forEach(function (botao) {
-  var elemento = document.getElementById(botao.id);
-  if (elemento) {
-    elemento.style.display = 'none';
-  }
-});
-
-//Esconde forma de pagamento e dados bancarios caso já esteja pago.
-var jaPago = document.getElementById('dt_vencimento')
-jaPago.id= 'dt_vencimento1';
-var tipoLan = elementosXPanel[3]
-var itemForm = tipoLan.querySelectorAll(".form-group")
-var linha3 = itemForm[3]
-var itensLin3 = linha3.querySelectorAll(".col-xs-12")
-
-if (jaPago.type === 'hidden') {
-  itensLin3[1].style.display="none"
-  itensLin3[2].style.display="none"
-  itensLin3[0].classList.remove("col-md-5")
-  itensLin3[0].classList.add("col-md-12")
 }
 
 
-var anexoObs = document.getElementById('CONTEUDOANEXOS')
-var anexoTbody = anexoObs.getElementsByTagName('tbody')
-var valoresQuartaCelula = [];
 
 
-if (anexoObs) { // Verifica se a tabela foi encontrada
-  var tbody = anexoObs.querySelector("tbody"); // Seleciona o corpo da tabela
 
-  if (tbody) {
-    var linhas = tbody.getElementsByTagName("tr"); // Seleciona todas as linhas do corpo da tabela
-
-    for (var i = 0; i < linhas.length; i++) {
-      var linha = linhas[i];
-      var celula = linha.getElementsByTagName("td")[3]; // Pega a quarta célula (índice 3)
-
-      if (celula) {
-        valoresQuartaCelula.push(celula.textContent); // Armazena o valor da quarta célula na array
+function obterValorDaTdSiengeEocultarLinhas() {
+    var infoSiengeTable = pedidoEco[4].querySelectorAll("tr");
+    var valorDaTd3 = null; // Inicialize com um valor padrão ou null
+  
+    for (var i = 0; i < infoSiengeTable.length; i++) {
+      var td2 = infoSiengeTable[i].querySelector("td:nth-child(2)");
+      var td3 = infoSiengeTable[i].querySelector("td:nth-child(3)");
+  
+      if (td2 && td2.textContent.trim() === "SIENGE") {
+        valorDaTd3 = td3.textContent.trim();
+        infoSiengeTable[i].style.display = "none"; // Oculta a linha
+        break; // Parar a busca após encontrar o valor "SIENGE"
       }
     }
+  
+    return valorDaTd3;
   }
+  
+  var valorDaTd3Sienge = obterValorDaTdSiengeEocultarLinhas();
+
+document.getElementById('pedidoEco').value =  valorDaTd3Sienge
+
+
+setTimeout(function() {
+	document.querySelector("#textPed").style.transition = "width 0.5s";
+    document.querySelector("#textPed").style.width = "78px"
+}, 500); // 3000 milissegundos = 3 segundos
+
+setTimeout(function() {
+	document.querySelector("#textPed").style.transition = "width 0.5s";
+    document.querySelector("#textPed").style.width = "0px"
+}, 2000); // 3000 milissegundos = 3 segundos
+
+	for (var i = 0; i < document.querySelectorAll("#btnPed").length; i++) {
+		document.querySelectorAll("#btnPed")[i].addEventListener("mouseenter", function() {
+        // Ação a ser executada quando o mouse entra no botão
+        var btn2s = document.querySelectorAll("#textPed");
+        for (var j = 0; j < btn2s.length; j++) {
+            btn2s[j].style.transition = "width 0.5s";
+            btn2s[j].style.width = "78px";
+        }
+    });
 }
 
-if (valoresQuartaCelula) {
-  var celulasQuartaColuna = tbody.querySelectorAll("td:nth-child(4)"); // Seleciona todas as células da quarta coluna
+for (var i = 0; i < document.querySelectorAll("#btnPed").length; i++) {
+  document.querySelectorAll("#btnPed")[i].addEventListener("mouseout", function() {
+        // Ação a ser executada quando o mouse entra no botão
+        var btn2s = document.querySelectorAll("#textPed");
+        for (var j = 0; j < btn2s.length; j++) {
+            btn2s[j].style.transition = "width 0.5s";
+        	btn2s[j].style.width = "0";
+        }
+    });
+}}
 
-  for (var i = 0; i < celulasQuartaColuna.length; i++) {
-    if (valoresQuartaCelula[i] !== null && valoresQuartaCelula[i].trim() !== "") {
-      celulasQuartaColuna[i].style.backgroundColor = "#87CEFA"; // Adiciona a classe de estilo
-      celulasQuartaColuna[i].style.color = "#555";
-      celula.textContent = celula.textContent.toUpperCase();
-      celulasQuartaColuna[i].style.border = "1px solid #ccc";
-    }
-  }
-}
-
-var panelTitulo = elementosXPanel[2]
-var Titulo = panelTitulo.querySelector('.x_title')
-Titulo.style.display = "none"
-
-
-var linkPed = "https://catagua.sienge.com.br/sienge/ADC/listItemPedido.do?entity.itemPedidoPK.nuPedidoCompra="
-var Ped = document.getElementById("nu_pedido").value
-var link = linkPed+Ped
-var botaoPed = document.getElementById("nu_pedido")
-const regex = /^\d{5}$/
-
-botaoPed.addEventListener('click', function() {
-  var larguraPopup = 850;
+if (document.querySelectorAll(".x_title")[2].querySelector('h2').textContent.includes("PEDIDO:")){
+document.querySelector("#btnPed").addEventListener('dblclick', function() {
+  var linkPed = "https://catagua.sienge.com.br/sienge/ADC/listItemPedido.do?entity.itemPedidoPK.nuPedidoCompra="+parseInt(DivNumPedido[1])
+  var larguraPopup = 900;
   var alturaPopup = 500;
-  var left = (screen.width - larguraPopup) / 2;
-  var top = (screen.height - alturaPopup) / 2;
-
-  var config = `width=${larguraPopup}, height=${alturaPopup}, left=${left}, top=${top}, menubar=no, status=no, toolbar=no, location=no, status=no`;
-
+  var config = `width=${larguraPopup}, height=${alturaPopup}, menubar=no, status=no, toolbar=no, location=no, status=no`;
   //window.open(linkPed+Ped, '_blank')
-  window.open(link, Ped, config);
+  window.open(linkPed, '', config);
 
 })
 
+document.querySelector("#btnPed").addEventListener('click', function() {
+  copiarParaAreaDeTransferencia(textoParaCopiar)
 
-if (regex.test(Ped)){
-  const novaRegraCSS = document.createElement('style');
-    novaRegraCSS.innerHTML = `
-    #nu_pedido {
-      display: inline-block;
-      padding: 10px 20px;
+})
 
-   
-      transition: 0.3s;
-    }
-
-    #nu_pedido:hover {
-      background-color: #2980b930;
-      cursor: pointer;
-      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    }
-
-    #nu_pedido:active {
-      transform: translateY(2px);
-      box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-    }
-    `;
-  botaoPed.removeAttribute('disabled')
-  botaoPed.setAttribute('readonly', 'true')
-  document.head.appendChild(novaRegraCSS);
+function copiarParaAreaDeTransferencia(texto) {
+  const elementoTemporario = document.createElement("textarea");
+  elementoTemporario.value = texto;
+  document.body.appendChild(elementoTemporario);
+  elementoTemporario.select();
+  document.execCommand("copy");
+  document.body.removeChild(elementoTemporario);
 }
 
-//Verifica a data atual e se ela tem no minimo 7 dias
-//Passar mouse emcima mostra a data a ser inserida
-const dataInput = document.getElementById('dt_vencimento1');
-const dataInserida = new Date(dataInput.value);
-const dataAtual = new Date();
-const diferencaEmDias = Math.floor((dataInserida - dataAtual) / (1000 * 60 * 60 * 24));
-
-if (diferencaEmDias <= 5) {
-  dataInput.style.backgroundColor = "#d9534f25";
+// Exemplo de uso:
+const textoParaCopiar = parseInt(DivNumPedido[1]);
+}
 
 
-  dataInput.addEventListener('mouseenter', function() {
-    dataInput.value = novaDataFormatada();
-    dataInput.style.backgroundColor = "#5cb85c30";
-  });
-
-  dataInput.addEventListener('mouseleave', function() {
-    dataInput.value = dataOriginal();
-    dataInput.style.backgroundColor = "#d9534f25";
-  });
 
 
-  const novaRegraCSS = document.createElement('style');
-    novaRegraCSS.innerHTML = `
-    #dt_vencimento1:hover {
-      background-color: #2980b930;
-      cursor: pointer;
-      box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-    }
-    #dt_vencimento1:active {
-      transform: translateY(2px);
-      box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-    }
-
-    .animar {
-      animation: float 3s ease-in-out infinite;
-      position:absolute;
-      transform: translate(-50%, -50%);
-      top:10%;
-      right:10%;
-      background: radial-gradient(circle, #fff, #bbb);
-      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.5);
-    }
 
 
-    @keyframes float {
-      0%, 100% {
-        transform: translateY(0);
-      }
-      50% {
-        transform: translateY(-5px)
-      }
-    }
+document.querySelectorAll(".row")[0].style.display = "grid";
+document.querySelectorAll(".row")[0].style.gridTemplateColumns = "1fr 31vw 32vw";
 
-    `;
-  document.head.appendChild(novaRegraCSS);
+
+if (document.querySelectorAll(".x_title")[2].querySelector('h2').textContent.includes("PEDIDO:")){
+  document.querySelectorAll(".row > div")[0].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[0].style.gridRow = 1;
+  document.querySelectorAll(".row > div")[0].classList.remove("col-md-8")
+  document.querySelectorAll(".row > div")[0].classList.add("col-md-12")
+  document.querySelectorAll(".row > div")[1].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[1].style.gridRow = 4;
+  document.querySelectorAll(".row > div")[1].classList.remove("col-md-4")
+  document.querySelectorAll(".row > div")[1].classList.add("col-md-12")
+  document.querySelectorAll(".row > div")[2].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[2].style.gridRow = 3;
+  document.querySelectorAll(".row > div")[4].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[4].style.gridRow = 5;
+  document.querySelectorAll(".row > div")[7].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[7].style.gridRow = 6;
+  document.querySelectorAll(".row > div")[8].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[8].style.gridRow = 2;
+  document.querySelectorAll(".row > div")[9].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[9].style.gridRow = 7;
+  document.querySelectorAll(".row > div")[10].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[10].style.gridRow = 8;
+  document.querySelectorAll(".x_title")[2].querySelector('[align="right"]').style.display = "none";
+}else{
+  document.querySelectorAll(".row > div")[0].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[0].style.gridRow = 1;
+  document.querySelectorAll(".row > div")[0].classList.remove("col-md-8")
+  document.querySelectorAll(".row > div")[0].classList.add("col-md-12")
+  document.querySelectorAll(".row > div")[1].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[1].style.gridRow = 3;
+  document.querySelectorAll(".row > div")[1].classList.remove("col-md-4")
+  document.querySelectorAll(".row > div")[1].classList.add("col-md-12")
+  document.querySelectorAll(".row > div")[2].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[2].style.gridRow = 4;
+  document.querySelectorAll(".row > div")[5].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[5].style.gridRow = 5;
+  document.querySelectorAll(".row > div")[6].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[6].style.gridRow = 2;
+  document.querySelectorAll(".row > div")[8].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[8].style.gridRow = 7;
+  document.querySelectorAll(".row > div")[7].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[7].style.gridRow = 6;
+  /*document.querySelectorAll(".row > div")[10].style.gridColumn = 1;
+  document.querySelectorAll(".row > div")[10].style.gridRow = 8;*/
+
+}
+
+var RefNota = document.querySelectorAll(".x_title")[0].querySelectorAll("a")[2].href
+var RefAprov = document.querySelectorAll(".x_title")[0].querySelectorAll("a")[0].href
+var NotaDiv = `<div class="col-md-12 col-sm-12 col-xs-12" style="width:64vw;position:absolute;right: 0px;">
+<div class="x_panel">
+	<a class="collapse-link collapsed">
+		<div class="x_title">
+			<h2>Visualização</h2>
+			
+			<div id="LocalBotoes" class="clearfix"style="display:flex;justify-content: flex-end;">
+        <button id="BtnNotaIframe" type="button" class="btn btn-dark" style="margin-left: 10px;width: 40px;"><i class="fa fa-file-text"></i></button>
+
+
+        <button id="BtnHistIframe" type="button" class="btn btn-info" style="text-align: left;"><i class="fa-solid fa-list-check"></i></button>
+      </div>
+		</div>
+	</a>
+
+	
+	<iframe id="IframeNota" src="${RefNota}" style="
+    width: 100%;
+    height: 1404px;
+"></iframe>
+
+</div>
+</div>`
+
+// Iterar sobre os elementos e adicionar NotaDiv como um elemento filho em cada um
+
+  // Criar um elemento temporário para conter NotaDiv
+  var tempDiv = document.createElement("div");
+  tempDiv.innerHTML = NotaDiv;
+
+  // Adicionar o elemento temporário como um filho de elementoRow
+  document.querySelectorAll(".row")[0].appendChild(tempDiv);
+  document.querySelectorAll(".x_title")[0].querySelectorAll("a")[2].style.display = "none"
+
+  document.querySelector('#BtnNotaIframe').addEventListener('click', function(){
+    document.querySelector('#IframeNota').src = RefNota
+  })
+
+  document.querySelector('#BtnHistIframe').addEventListener('click', function(){
+    document.querySelector('#IframeNota').src = RefAprov
+  })
+
+  function handleClick(event) {
+    var href = event.target.getAttribute("data-href");
+    console.log(href);
+  }
   
-  dataInput.removeAttribute('disabled')
-  dataInput.setAttribute('readonly', 'true')
+  
+  var tbody = document.querySelector("#CONTEUDOANEXO tbody");
+  var trElementsCenter = tbody.querySelectorAll("td[align='center']");
 
-  obsInfo = document.getElementById('ds_informacao')
-  obsInfo.value= "Inserido para 7 dias conforme permitido o sistema."
+  if (trElementsCenter.length >= 1) {
+    for (var i = 0; i < trElementsCenter.length; i++) {
+      var BtnAnexoIncluido = `
+        <button class="BtnAnexo${i} btn btn-success" onclick="document.querySelector('#IframeNota').src = '${trElementsCenter[i].querySelectorAll('a')[1].href}'">
+          <i class="fa-solid fa-file"></i>
+        </button>
+      `;
+      document.querySelector("#LocalBotoes").insertAdjacentHTML('beforeend', BtnAnexoIncluido)
+    }
+  }
 
-  dataInput.setAttribute('onclick', 'inserirInformacaoExtra()');
-}
-
-dataInput.addEventListener('click', function() {
-  alert("Adicionado observação de vencimento para 7 dias");
-});
-
-function dataOriginal() {
-  const datacom1 = new Date(dataInserida);
-  datacom1.setDate(dataInserida.getDate() + 1);
-  const ano = datacom1.getFullYear();
-  const mes = (datacom1.getMonth() + 1).toString().padStart(2, '0');
-  const dia = datacom1.getDate().toString().padStart(2, '0');
-  return `${ano}-${mes}-${dia}`;
-}
-
-function novaDataFormatada() {
-  const datacom7 = new Date(dataAtual);
-  datacom7.setDate(dataAtual.getDate() + 7);
-  const ano = datacom7.getFullYear();
-  const mes = (datacom7.getMonth() + 1).toString().padStart(2, '0');
-  const dia = datacom7.getDate().toString().padStart(2, '0');
-  return `${ano}-${mes}-${dia}`;
-}
-
-var menuSid = document.querySelector("body.nav-md");
-menuSid.classList.remove("nav-md");
-menuSid.classList.add("nav-sm");
-
-var popup = menuSid.querySelectorAll("span.bg-green")
-for (var i = 0; i < popup.length; i++) {
-  popup[i].classList.add("animar")
-}
-
-
-
-const codigoHTML = `
-  <nav class="menu" id=menuBuble>
-    <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open">
-    <label class="menu-open-button" for="menu-open">
-      <span class="lines line-1"></span>
-      <span class="lines line-2"></span>
-      <span class="lines line-3"></span>
-    </label>
-
-
-  </nav>
-`;
-
-const divHTML = document.createElement('div');
-divHTML.innerHTML = codigoHTML;
-document.body.appendChild(divHTML);
-elementosXPanel[9].style.display ="";
-elementosXPanel[8].style.margin = "0 0 30px 0";
-
-
-var bot1 = elementosXPanel[9].querySelectorAll("a")[0]
-var bot2 = elementosXPanel[9].querySelectorAll("a")[1]
-
-if (bot1.href === "javascript:editarNF()"){
-  const iconAprova =`
-  <i class="fa fa-check"></i>
-  `;
-  const iconReprova =`
-  <i class="fa fa-plus"></i>
-  `;
-
-  const botBubleAp = document.createElement('a')
-  botBubleAp.classList = 'menu-item blue'
-  botBubleAp.href = "javascript:editarNF()"
-  botBubleAp.innerHTML = iconAprova
-  document.getElementById('menuBuble').appendChild(botBubleAp);
-
-  const botBubleRp = document.createElement('a')
-  botBubleRp.classList = 'menu-item red'
-  botBubleRp.href = "javascript:excluirNF()"
-  botBubleRp.innerHTML = iconReprova
-  document.getElementById('menuBuble').appendChild(botBubleRp);
-  elementosXPanel[9].style.display = "none"
-
-} if (elementosXPanel[9].querySelectorAll(".btn")[0].title === "Finalizar") {
-  const iconAprova =`
-  <i class="fa fa-check"></i>
-  `;
-  const iconReprova =`
-  <i class="fa fa-plus"></i>
-  `;
-
-  const botBubleAp = document.createElement('a')
-  botBubleAp.classList = 'menu-item green'
-  botBubleAp.setAttribute('onclick',`abrirModalFinalizacao(${notaID.value});`)
-  botBubleAp.innerHTML = iconAprova
-  document.getElementById('menuBuble').appendChild(botBubleAp);
-
-  const botBubleRp = document.createElement('a')
-  botBubleRp.classList = 'menu-item red'
-  botBubleRp.setAttribute('onclick',`abrirModalReprovacao(${notaID.value});`)
-  botBubleRp.innerHTML = iconReprova
-  document.getElementById('menuBuble').appendChild(botBubleRp);
-  elementosXPanel[9].style.display = "none"
-
-}
-
-
-
+  document.querySelectorAll(".x_title")[0].querySelector('[align="right"]').style.display = "none";
